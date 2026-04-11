@@ -1,6 +1,5 @@
 import base64
 from typing import Annotated
-
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.language_models.chat_models import BaseChatModel
 from langgraph.graph import StateGraph, START, END
