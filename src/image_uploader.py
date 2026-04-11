@@ -100,21 +100,21 @@ class ImageUploader:
 
         try:
             # Get identification string from puremagic
-            file_info = puremagic.from_string(file_bytes)
+            file_info = puremagic.from_string(file_bytes).lower()
 
-            # Use a more flexible check: Does the result contain any of our keywords?
-            is_valid_content = any(keyword in file_info.lower() for keyword in ["jpeg", "jpg", "png"])
+            # Define keywords that confirm the file is a valid image type for your LLM
+            # We use 'j' and 'p' keywords to catch all variants
+            is_jpeg = any(k in file_info for k in ["jpeg", "jpg", "jfif", ".jpe", ".jif"])
+            is_png = "png" in file_info
             
-            if not is_valid_content:
-                # Debugging tip: if it keeps failing, uncomment the next line to see what puremagic sees
-                st.write(f"DEBUG: {uploaded_file.name} detected as: {file_info}")
-                st.error(f"❌ {uploaded_file.name}: File content is not a recognized image.")
+            if not (is_jpeg or is_png):
+                st.error(f"❌ {uploaded_file.name}: Content verification failed. Detected as: {file_info}")
 
                 return False
 
         except Exception:
             # If puremagic can't identify the file at all
-            st.error(f"❌ {uploaded_file.name}: Content verification failed.")
+            st.error(f"❌ {uploaded_file.name}: Could not verify image content.")
 
             return False
 
