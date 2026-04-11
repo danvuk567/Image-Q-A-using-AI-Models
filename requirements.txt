@@ -1,0 +1,13 @@
+# Frontend
+streamlit
+
+# Core Logic & Orchestration
+langchain-core
+langgraph
+typing-extensions
+
+# AI Providers (Based on your Agent class)
+langchain-openai
+langchain-google-genai
+langchain-groq
+langchain-huggingface
