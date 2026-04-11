@@ -73,7 +73,7 @@ class ImageUploader:
         Checks are ordered from cheapest to most expensive:
           1. MIME type reported by Streamlit — catches obvious wrong types
           2. File extension — catches files with wrong or missing extensions
-          3. Actual file content via imghdr — cannot be fooled by renaming
+          3. Actual file content via puremagic — cannot be fooled by renaming
 
         Args:
             uploaded_file: A single file object from st.file_uploader.
@@ -83,40 +83,44 @@ class ImageUploader:
         """
         # Check 1 — MIME type reported by Streamlit
         if uploaded_file.type not in self.ALLOWED_TYPES:
-            st.error(
-                f"❌ {uploaded_file.name}: Invalid file type '{uploaded_file.type}'. "
-                f"Please upload a JPG or PNG image."
-            )
+            st.error(f"❌ {uploaded_file.name}: Invalid MIME type '{uploaded_file.type}'.")
+
             return False
 
         # Check 2 — file extension
         ext = os.path.splitext(uploaded_file.name)[1].lower()
         if ext not in self.ALLOWED_EXTENSIONS:
-            st.error(
-                f"❌ {uploaded_file.name}: Invalid extension '{ext}'. "
-                f"Please upload a JPG or PNG image."
-            )
+            st.error(f"❌ {uploaded_file.name}: Invalid extension '{ext}'.")
+
             return False
 
         # Check 3 — actual file content using puremagic
+        uploaded_file.seek(0)
         file_bytes = uploaded_file.read()
 
         try:
-            # puremagic looks at the "magic bytes" to see what the file actually is
+            # Get identification string from puremagic
             file_info = puremagic.from_string(file_bytes)
+
+            # Use a more flexible check: Does the result contain any of our keywords?
+            is_valid_content = any(keyword in file_info.lower() for keyword in ["jpeg", "jpg", "png"])
             
-            # Check if the detected extension matches our allowed types
-            # (puremagic returns strings like ".jpg" or ".png")
-            if not any(ext in file_info for ext in [".jpg", ".jpeg", ".png"]):
-                st.error(
-                    f"❌ {uploaded_file.name}: File content does not appear "
-                    f"to be a valid image."
-                )
+            if not is_valid_content:
+                # Debugging tip: if it keeps failing, uncomment the next line to see what puremagic sees
+                # st.write(f"DEBUG: {uploaded_file.name} detected as: {file_info}")
+                st.error(f"❌ {uploaded_file.name}: File content is not a recognized image.")
+
                 return False
+
         except Exception:
             # If puremagic can't identify the file at all
-            st.error(f"❌ {uploaded_file.name}: Could not verify image content.")
+            st.error(f"❌ {uploaded_file.name}: Content verification failed.")
+
             return False
+
+        finally:
+            # ALWAYS REWIND so the rest of your app (st.image, saving, etc.) can read it
+            uploaded_file.seek(0)
 
         return True
 
