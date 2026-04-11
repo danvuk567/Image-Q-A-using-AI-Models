@@ -1,11 +1,8 @@
 import streamlit as st
-import os
 import uuid
 import json
-import os
-from api_keys import APIKey
-from agents import Agent
-from image_uploader import ImageUploader
+from src.agents import Agent
+from src.image_uploader import ImageUploader
 
 
 # =============================================================================
@@ -316,6 +313,7 @@ def stream_response(
     user_message: str,
     thread_id: str,
     image_data: list[bytes] | None = None,
+    mime_type: str | list[str] = "image/jpeg",
 ) -> str:
     """Stream the agent response token by token into a Streamlit chat bubble.
 
@@ -340,6 +338,7 @@ def stream_response(
         for chunk in agent.stream(
             user_prompt=user_message,
             image_data=image_data,
+            mime_type=mime_type,
             thread_id=thread_id,
         ):
             full_response += chunk
@@ -421,7 +420,7 @@ def init_session_state() -> None:
 # =============================================================================
 
 st.set_page_config(
-    page_title="🤖 Dual AI Model Image Analysis Comparison Dashboard",
+    page_title="🤖 Image Q&A Analysis using 1 or 2 AI Models",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -445,7 +444,7 @@ models_data = load_models("models.json")
 
 st.markdown(f"""
     <div style="display: flex; align-items: center;">
-        <h1 style="margin: 0;">🤖 Dual AI Model Image Analysis Comparison Dashboard</h1>
+        <h1 style="margin: 0;">🤖 Image Q&A Analysis using 1 or 2 AI Models</h1>
     </div>
 """, unsafe_allow_html=True)
 
@@ -477,11 +476,15 @@ with col1:
         # 1. DATA GATHERING & STATE ANALYSIS
         # Extract binary data and a unique hash representing the current set of images
         image_bytes    = st.session_state.uploader.get_images()
-        image_bytes    = st.session_state.uploader.get_images()
         image_hash     = st.session_state.uploader.get_hash()
-        has_images     = len(image_bytes) > 0
+
+        # Get the mime types from your uploader component
+        # If your component doesn't have get_types(), you might need to add it 
+        # to return a list like ["image/png", "image/jpeg"]
+        image_types = st.session_state.uploader.get_types()
 
         # Detect if the images are new or if this is a follow-up to the existing set
+        has_images     = len(image_bytes) > 0
         images_changed = image_hash != st.session_state.last_image_hash
 
         # 2. CONTEXT PREPARATION
@@ -496,13 +499,15 @@ with col1:
         # We only stage images for the LLM if they are present and have changed.
         if has_images and images_changed:
             st.session_state.current_images_to_send = image_bytes
+            # Store the types in session state so the agent can use them
+            st.session_state.current_mime_types = image_types
 
             # Update the persistent hash to "lock" this set of images until they are modified
             st.session_state.last_image_hash = image_hash
         else:
             # For follow-up questions, we send None (LLM uses its memory)
             st.session_state.current_images_to_send = None
-
+            st.session_state.current_mime_types = "image/jpeg" # Default fallback
 
 
 
@@ -547,6 +552,7 @@ with col2:
                     agent=st.session_state.agent_1,
                     user_message=st.session_state.current_full_message, # Use persisted message
                     image_data=st.session_state.current_images_to_send, # Use persisted images
+                    mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
                     thread_id=st.session_state.session_id_1
                 )
 
@@ -598,6 +604,7 @@ with col3:
                     agent=st.session_state.agent_2,
                     user_message=st.session_state.current_full_message, # Use persisted message
                     image_data=st.session_state.current_images_to_send, # Use persisted images
+                    mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
                     thread_id=st.session_state.session_id_2
                 )
 
