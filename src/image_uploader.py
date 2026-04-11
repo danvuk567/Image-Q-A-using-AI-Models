@@ -1,7 +1,7 @@
 import os
 import io
 import hashlib
-import imghdr
+import puremagic
 import streamlit as st
 
 
@@ -98,16 +98,24 @@ class ImageUploader:
             )
             return False
 
-        # Check 3 — actual file content using imghdr
-        # Reads raw bytes to confirm the file really is an image,
-        # regardless of what the MIME type or extension claim
+        # Check 3 — actual file content using puremagic
         file_bytes = uploaded_file.read()
-        actual_type = imghdr.what(io.BytesIO(file_bytes))
-        if actual_type not in ("jpeg", "png"):
-            st.error(
-                f"❌ {uploaded_file.name}: File content does not appear "
-                f"to be a valid image."
-            )
+
+        try:
+            # puremagic looks at the "magic bytes" to see what the file actually is
+            file_info = puremagic.from_string(file_bytes)
+            
+            # Check if the detected extension matches our allowed types
+            # (puremagic returns strings like ".jpg" or ".png")
+            if not any(ext in file_info for ext in [".jpg", ".jpeg", ".png"]):
+                st.error(
+                    f"❌ {uploaded_file.name}: File content does not appear "
+                    f"to be a valid image."
+                )
+                return False
+        except Exception:
+            # If puremagic can't identify the file at all
+            st.error(f"❌ {uploaded_file.name}: Could not verify image content.")
             return False
 
         return True
