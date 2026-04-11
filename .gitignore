@@ -1,0 +1,21 @@
+# --- STREAMLIT SPECIFIC ---
+# NEVER upload your .env. This is where your API keys live.
+.env
+
+# --- PYTHON REPRODUCIBILITY ---
+# Even if you use Conda, these rules prevent other environments from leaking.
+.venv/
+env/
+venv/
+ENV/
+
+# --- RUNTIME ARTIFACTS ---
+# These folders are created by Streamlit/Python during execution. 
+# They are unique to your local machine.
+__pycache__/
+*.pyc
+
+# --- PROJECT ASSETS (Optional) ---
+# If you store the 287 images locally in a 'data' folder, ignore it.
+# Large datasets should be stored in the cloud (S3, GCS) or referenced via URL.
+data/
