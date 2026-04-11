@@ -1,0 +1,112 @@
+{
+  "OpenAI": {
+    "gpt-4.1-nano": {
+      "Company": "OpenAI",
+      "Input": 0.05,
+      "Output": 0.20,
+      "Description": "Fastest and cheapest OpenAI GPT model. Ideal for simple extraction tasks like classification."
+    },
+    "gpt-4.1-mini": {
+      "Company": "OpenAI",
+      "Input": 0.40,
+      "Output": 1.60,
+      "Description": "Strong image understanding OpenAI GPT model, beats GPT-4o on image benchmarks at lower cost."
+    },
+    "gpt-4.1": {
+      "Company": "OpenAI",
+      "Input": 2.00,
+      "Output": 8.00,
+      "Description": "High performance OpenAI GPT model for complex images with 1M token context window."
+    },
+    "gpt-5.4-nano": {
+      "Company": "OpenAI",
+      "Input": 0.20,
+      "Output": 1.25,
+      "Description": "Smallest OpenAI GPT-5 model. Best for high-volume, simple extraction at low cost."
+    },
+    "gpt-5.4-mini": {
+      "Company": "OpenAI",
+      "Input": 0.75,
+      "Output": 4.50,
+      "Description": "Fast, capable, strong OpenAI GPT model that has multimodal understanding at mid-range cost."
+    },
+    "gpt-5.4": {
+      "Company": "OpenAI",
+      "Input": 2.50,
+      "Output": 15.00,
+      "Description": "Flagship OpenAI GPT model. Best accuracy for complex or ambiguous image content."
+    }
+  },
+  "Google": {
+    "gemini-2.5-flash-lite": {
+      "Company": "Google",
+      "Input": 0.10,
+      "Output": 0.40,
+      "Description": "The smallest and most cost effective Google AI model, built for at scale usage."
+    },
+    "gemini-2.5-flash": {
+      "Company": "Google",
+      "Input": 0.30,
+      "Output": 2.50,
+      "Description": "A hybrid reasoning Google AI model which supports a 1M token context window and has thinking budgets."
+    },
+    "gemini-2.5-pro": {
+      "Company": "Google",
+      "Input": 1.25,
+      "Output": 10.00,
+      "Description": "A state-of-the-art multipurpose Google AI model, which excels at coding and complex reasoning tasks."
+    },
+    "gemini-3-flash-preview": {
+      "Company": "Google",
+      "Input": 0.50,
+      "Output": 3.00,
+      "Description": "An intelligent Google AI model built for speed, combining frontier intelligence with superior search and grounding."
+    },
+    "gemini-3-pro-preview": {
+      "Company": "Google",
+      "Input": 2.00,
+      "Output": 12.00,
+      "Description": "The best Google AI model in the world for multimodal understanding, and our most powerful agentic and vibe-coding model yet."
+    }
+  },
+  "HuggingFace": {
+    "Qwen/Qwen2.5-VL-72B-Instruct": {
+      "Company": "Alibaba",
+      "Input": 0,
+      "Output": 4.00,
+      "Description": "Alibaba's flagship 72B vision-language model designed for expert-level multimodal analysis. It features elite performance in document parsing, chart-to-JSON extraction, and long-form video understanding (1hr+). With enhanced 'Agentic' capabilities, it can autonomously navigate complex GUIs and mobile interfaces, making it ideal for high-precision retail automation and strategic data mining."
+    },
+    "Qwen/Qwen3-VL-8B-Instruct": {
+      "Company": "Alibaba",
+      "Input": 0,
+      "Output": 0.80,
+      "Description": "Alibaba's advanced open-source AI model that can see, read, and understand images and video. It can control computers and phones, read text in 32 languages even in poor lighting, and watch hours of video to find specific moments. Supporting up to 1M tokens in context, it is designed for complex multimodal reasoning and agentic GUI control."
+    },
+    "Qwen/Qwen2.5-VL-7B-Instruct": {
+      "Company": "Alibaba",
+      "Input": 0,
+      "Output": 0.60,
+      "Description": "Alibaba's open-source AI model that can see and understand images and videos. It can read text in photos, analyse charts, fill out forms, and even control devices. It can process videos over an hour long to find specific moments, effectively giving AI a smarter pair of eyes."
+    },
+    "zai-org/GLM-4.6V-Flash": {
+      "Company": "Zhipu AI",
+      "Input": 0,
+      "Output": 0.40,
+      "Description": "A lightweight, low-latency vision AI designed for high-efficiency 'See-and-Act' workflows. It supports a massive 128K token context window, allowing it to parse extremely long documents and multi-image sequences. It excels at direct tool-use from visual inputs, mixed image-text generation, and UI layout reconstruction, making it the ideal engine for fast, local-style autonomous agents."
+    },
+    "zai-org/GLM-4.5V": {
+      "Company": "Zhipu AI",
+      "Input": 0,
+      "Output": 1.80,
+      "Description": "A powerful open-source MoE vision-language model (106B total / 12B active) that natively reasons about visual content. It excels at parsing 4K resolution images, complex charts, and long documents. Unique 'Thinking Mode' allows for deep step-by-step reasoning for GUI-agent workflows and video understanding, while its 64K context window supports high-fidelity multimodal analysis."
+    }
+  },
+  "Groq": {
+    "meta-llama/llama-4-scout-17b-16e-instruct": {
+      "Company": "Meta",
+      "Input": 0.11,
+      "Output": 0.34,
+      "Description": "Fast and accurate Meta AI that can read both text and images, hold multi-turn conversations in multiple languages, and return structured data."
+    }
+  }
+}
