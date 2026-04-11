@@ -107,7 +107,7 @@ class ImageUploader:
             
             if not is_valid_content:
                 # Debugging tip: if it keeps failing, uncomment the next line to see what puremagic sees
-                # st.write(f"DEBUG: {uploaded_file.name} detected as: {file_info}")
+                st.write(f"DEBUG: {uploaded_file.name} detected as: {file_info}")
                 st.error(f"❌ {uploaded_file.name}: File content is not a recognized image.")
 
                 return False
