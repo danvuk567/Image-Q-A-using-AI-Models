@@ -22,6 +22,11 @@ div[data-testid="stContainer"] {
     background-color: #111111;
 }
 
+div[data-testid="stSelectbox"] label p {
+    color: #f0f0f0; /* Very light gray, almost white */
+    font-weight: 400; /* Normal weight, change to 600 for bold */
+}
+
 /* Markdown text */
 div[data-testid="stMarkdown"] {
     color: #ffffff;
