@@ -168,11 +168,18 @@ def model_selector(slot: str, models_data: dict, exclude_model: str | None) -> t
 
     with st.container(border=True):
         # 1. Initialize Provider Selection
-        provider = st.selectbox(
-            f"Provider {slot.upper()}", 
-            PROVIDERS, 
-            key=f"provider_{slot}"
-        )
+        if slot == "1":
+            provider = st.selectbox(
+                "Primary Provider", 
+                PROVIDERS, 
+                key=f"provider_{slot}"
+            )
+        else:
+            provider = st.selectbox(
+                "Secondary Provider", 
+                PROVIDERS, 
+                key=f"provider_{slot}"
+            )
 
         # 2. Fetch models for the chosen provider and filter exclusions
         provider_models = get_models_for_provider(models_data, provider)
@@ -181,11 +188,18 @@ def model_selector(slot: str, models_data: dict, exclude_model: str | None) -> t
         options = ["Select Model..."] + [m for m in all_names if m != exclude_model]
 
         # 3. Render Model Selection
-        model = st.selectbox(
-            f"Model {slot.upper()}", 
-            options, 
-            key=f"model_{slot}"
-        )
+        if slot == "1":
+            model = st.selectbox(
+                "Primary Model", 
+                options, 
+                key=f"model_{slot}"
+            )
+        else:
+            model = st.selectbox(
+                "Secondary Model", 
+                options, 
+                key=f"model_{slot}"
+            )
 
         # 4. State Management Logic: Detect model changes
         tracker_key = f"model_tracker_{slot}"
@@ -420,7 +434,7 @@ def init_session_state() -> None:
 # =============================================================================
 
 st.set_page_config(
-    page_title="🤖 Image Q&A Analysis using 1 or 2 AI Models",
+    page_title="🤖 Multi-Model Vision Hub",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -432,11 +446,9 @@ SYSTEM_PROMPT = """You are an expert in image analysis.
 Provide clear, concise, accurate responses using bullet points and examples when helpful.
 Respond in friendly, conversational and professional tone."""
 
-ENV_PATH = r"F:\Documents\Projects\Tech\Code\Analytics Vidhya\Python\.env"
-
 # Stylesheet now handles all styling including the diagnosis text area —
 # no inline CSS needed in this file.
-#load_css("style.css")
+load_css("static/style.css")
 init_session_state()
 
 # 3. Load Model Data (JSON)
@@ -444,7 +456,7 @@ models_data = load_models("models.json")
 
 st.markdown(f"""
     <div style="display: flex; align-items: center;">
-        <h1 style="margin: 0;">🤖 Image Q&A Analysis using 1 or 2 AI Models</h1>
+        <h1 style="margin: 0;">🤖 Multi-Model Vision Hub</h1>
     </div>
 """, unsafe_allow_html=True)
 
@@ -461,7 +473,7 @@ col1, col2, col3 = st.columns([1, 1.2, 1.2])
 with col1:
     # Aesthetically centered instruction for the user
     st.markdown(
-    "<p style='text-align: center; color: #aaaaaa;'>Upload an image, then ask questions below.</p>",
+    "<p style='text-align: center; color: #aaaaaa;'>Upload an image, and place your inquiries below.</p>",
     unsafe_allow_html=True
     )
 
@@ -516,7 +528,7 @@ with col1:
 # =============================================================================
 
 with col2:
-    st.header("AI Model #1 Analysis")
+    st.header("Primary AI Model")
 
     # 1. MODEL #1 MODEL & CREDENTIAL INITIALIZATION
     # Renders selectors and ensures this slot doesn't overlap with the other side's model
@@ -562,7 +574,7 @@ with col2:
 
     # 4. SLOT-SPECIFIC UTILITIES
     if st.session_state.messages_1:
-        st.button("🗑️ Clear Model #1 Chat", 
+        st.button("🗑️ Clear Primary AI Model Chat", 
                   key="btn_clear_1", 
                   use_container_width=True, 
                   on_click=clear_chat_callback, 
@@ -570,7 +582,7 @@ with col2:
     
 
 with col3:
-    st.header("AI Model #2 Analysis")
+    st.header("Secondary AI Model")
 
     # 1. MODEL #2 MODEL & CREDENTIAL INITIALIZATION
     # Renders selectors and ensures this slot doesn't overlap with the other side's model
@@ -614,7 +626,7 @@ with col3:
 
     # 4. SLOT-SPECIFIC UTILITIES
     if st.session_state.messages_2:
-        st.button("🗑️ Clear Model #2 Chat", 
+        st.button("🗑️ Clear Secondary AI Model Chat", 
                   key="btn_clear_2", 
                   use_container_width=True, 
                   on_click=clear_chat_callback, 
