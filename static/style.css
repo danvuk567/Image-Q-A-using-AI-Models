@@ -1,0 +1,82 @@
+/* Main background */
+.stApp {
+    background: linear-gradient(0deg, #fdfcfc 0%, #5c4f42 100%);
+    color: #ffffff;
+}
+
+/* Sidebar background */
+section[data-testid="stSidebar"] {
+    background-color: #111111;
+}
+
+/* Input fields and text areas */
+div[data-testid="stTextArea"] textarea,
+div[data-testid="stTextInput"] input {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #333333;
+}
+
+/* Containers */
+div[data-testid="stContainer"] {
+    background-color: #111111;
+}
+
+/* Markdown text */
+div[data-testid="stMarkdown"] {
+    color: #ffffff;
+}
+
+/* Captions */
+div[data-testid="stCaptionContainer"] {
+    color: #aaaaaa;
+}
+
+/* File uploader button text */
+div[data-testid="stFileUploader"] button {
+    color: #ffffff;
+    background-color: #333333;
+    border: 1px solid #555555;
+}
+
+/* File uploader label text */
+div[data-testid="stFileUploader"] label {
+    color: #ffffff;
+}
+
+/* File uploader drag and drop text */
+div[data-testid="stFileUploadDropzone"] {
+    background-color: #1a1a1a;
+    border: 1px dashed #555555;
+    color: #ffffff;
+}
+
+/* File uploader drag and drop small text */
+div[data-testid="stFileUploadDropzone"] small {
+    color: #aaaaaa;
+}
+
+/* All buttons text color */
+div[data-testid="stButton"] button {
+    color: #ffffff;
+    background-color: #333333;
+    border: 1px solid #555555;
+}
+
+/* Download button */
+div[data-testid="stDownloadButton"] button {
+    color: #ffffff;
+    background-color: #333333;
+    border: 1px solid #555555;
+}
+
+/* Button hover state */
+div[data-testid="stButton"] button:hover {
+    background-color: #555555;
+    border: 1px solid #777777;
+}
+
+div[data-testid="stDownloadButton"] button:hover {
+    background-color: #555555;
+    border: 1px solid #777777;
+}
