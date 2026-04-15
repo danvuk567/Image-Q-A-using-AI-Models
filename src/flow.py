@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode, tools_condition
-from src.agents_new import AgentState
+from src.agents import AgentState
 
 class Flow:
     def __init__(self, agents: list, memory: bool = False):
