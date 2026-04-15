@@ -548,10 +548,10 @@ with col2:
 
         # 2. Initialize the Flow (The Orchestrator)
         # This only builds if we have at least one agent ready
-        if "agent_1" in st.session_state and "flow" not in st.session_state:
+        if "agent_1" in st.session_state and "flow_1" not in st.session_state:
         
             # We pass the agent(s) in a list and enable memory at the FLOW level
-            st.session_state.flow = Flow(
+            st.session_state.flow_1 = Flow(
                 agents=[st.session_state.agent_1], 
                 memory=True
                 )
@@ -565,11 +565,11 @@ with col2:
 
         # 4. TRIGGER INFERENCE (Flow Orchestration Logic)
         if st.session_state.messages_1 and st.session_state.messages_1[-1]["role"] == "user":
-            if "flow" in st.session_state:
+            if "flow_1" in st.session_state:
                 with st.chat_message("assistant"):
                     # We now pass the FLOW to the streamer
                     res = stream_response(
-                        flow=st.session_state.flow, # Target the flow engine
+                        flow_1=st.session_state.flow_1, # Target the flow engine
                         user_message=st.session_state.current_full_message,
                         image_data=st.session_state.current_images_to_send,
                         mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
@@ -611,10 +611,10 @@ with col3:
 
         # 2. Initialize the Flow (The Orchestrator)
         # This only builds if we have at least one agent ready
-        if "agent_2" in st.session_state and "flow" not in st.session_state:
+        if "agent_2" in st.session_state and "flow_2" not in st.session_state:
        
             # We pass the agent(s) in a list and enable memory at the FLOW level
-            st.session_state.flow = Flow(
+            st.session_state.flow_2 = Flow(
                 agents=[st.session_state.agent_2], 
                 memory=True
             )
@@ -627,12 +627,11 @@ with col3:
 
         # 4. TRIGGER INFERENCE (Flow Orchestration Logic)
         if st.session_state.messages_2 and st.session_state.messages_2[-1]["role"] == "user":
-            # CRITICAL: Check for the FLOW, not just the agent
-            if "flow" in st.session_state:
+            if "flow_2" in st.session_state:
                 with st.chat_message("assistant"):
                     # We now pass the FLOW to the streamer
                     res = stream_response(
-                        flow=st.session_state.flow, # Target the flow engine
+                        flow_2=st.session_state.flow_2, # Target the flow engine
                         user_message=st.session_state.current_full_message,
                         image_data=st.session_state.current_images_to_send,
                         mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
