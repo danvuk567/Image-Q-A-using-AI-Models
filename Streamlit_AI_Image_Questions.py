@@ -2,6 +2,7 @@ import streamlit as st
 import uuid
 import json
 from src.agents import Agent
+from src.flow import Flow
 from src.image_uploader import ImageUploader
 
 
@@ -323,7 +324,7 @@ def api_key_handler(slot: str, provider: str):
     return st.session_state.get(vault_key)
 
 def stream_response(
-    agent: Agent,
+    flow: Flow,
     user_message: str,
     thread_id: str,
     image_data: list[bytes] | None = None,
@@ -349,7 +350,7 @@ def stream_response(
     # Generator that accumulates chunks as they arrive for saving to history
     def response_generator():
         nonlocal full_response
-        for chunk in agent.stream(
+        for chunk in flow.stream(
             user_prompt=user_message,
             image_data=image_data,
             mime_type=mime_type,
@@ -357,11 +358,9 @@ def stream_response(
         ):
             full_response += chunk
             yield chunk
-
-    # Render streaming response inside an assistant chat bubble
-    with st.chat_message("assistant"):
-        st.write_stream(response_generator())
-
+    
+    st.write_stream(response_generator())
+    
     return full_response
 
 
@@ -545,40 +544,49 @@ with col2:
                 temperature=0.0,
                 api_key=key_1,
                 system_prompt=SYSTEM_PROMPT,
-                memory=True,
                 )
 
-    # 2. CHAT INTERFACE CONTAINER
+        # 2. Initialize the Flow (The Orchestrator)
+        # This only builds if we have at least one agent ready
+        if "agent_1" in st.session_state and "flow" not in st.session_state:
+        
+            # We pass the agent(s) in a list and enable memory at the FLOW level
+            st.session_state.flow = Flow(
+                agents=[st.session_state.agent_1], 
+                memory=True
+                )
+
+    # 3. CHAT INTERFACE CONTAINER
     with st.container(height=500, border=True):
         # --- Render existing chat history ---
         for msg in st.session_state.messages_1:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-        # 3. TRIGGER INFERENCE (Model Response Logic)
-        # We only trigger a response if the last message in history is from the 'user'
+        # 4. TRIGGER INFERENCE (Flow Orchestration Logic)
         if st.session_state.messages_1 and st.session_state.messages_1[-1]["role"] == "user":
-            if "agent_1" in st.session_state:
-                # Calls the streaming helper to display the AI's "thought" process
-                res = stream_response(
-                    agent=st.session_state.agent_1,
-                    user_message=st.session_state.current_full_message, # Use persisted message
-                    image_data=st.session_state.current_images_to_send, # Use persisted images
-                    mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
-                    thread_id=st.session_state.session_id_1
-                )
+            if "flow" in st.session_state:
+                with st.chat_message("assistant"):
+                    # We now pass the FLOW to the streamer
+                    res = stream_response(
+                        flow=st.session_state.flow, # Target the flow engine
+                        user_message=st.session_state.current_full_message,
+                        image_data=st.session_state.current_images_to_send,
+                        mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
+                        thread_id=st.session_state.session_id_1
+                    )
 
-                # Commit the response to history and flag a rerun to update the UI
+                # Commit the response to history
                 st.session_state.messages_1.append({"role": "assistant", "content": res})
                 st.session_state.needs_rerun = True
 
-    # 4. SLOT-SPECIFIC UTILITIES
-    if st.session_state.messages_1:
-        st.button("🗑️ Clear Primary AI Model Chat", 
-                  key="btn_clear_1", 
-                  use_container_width=True, 
-                  on_click=clear_chat_callback, 
-                  args=("1",))
+        # 5. SLOT-SPECIFIC UTILITIES
+        if st.session_state.messages_1:
+            st.button("🗑️ Clear Primary AI Model Chat", 
+                    key="btn_clear_1", 
+                    use_container_width=True, 
+                    on_click=clear_chat_callback, 
+                    args=("1",))
     
 
 with col3:
@@ -599,28 +607,39 @@ with col3:
                 temperature=0.0,
                 api_key=key_2,
                 system_prompt=SYSTEM_PROMPT,
-                memory=True,
                 )
 
-    # 2. CHAT INTERFACE CONTAINER
+        # 2. Initialize the Flow (The Orchestrator)
+        # This only builds if we have at least one agent ready
+        if "agent_2" in st.session_state and "flow" not in st.session_state:
+       
+            # We pass the agent(s) in a list and enable memory at the FLOW level
+            st.session_state.flow = Flow(
+                agents=[st.session_state.agent_2], 
+                memory=True
+            )
+
+    # 3. CHAT INTERFACE CONTAINER
     with st.container(height=500, border=True):
         for msg in st.session_state.messages_2:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-        # 3. TRIGGER INFERENCE (Model Response Logic)
+        # 4. TRIGGER INFERENCE (Flow Orchestration Logic)
         if st.session_state.messages_2 and st.session_state.messages_2[-1]["role"] == "user":
-            if "agent_2" in st.session_state:
-                # Calls the streaming helper to display the AI's "thought" process
-                res = stream_response(
-                    agent=st.session_state.agent_2,
-                    user_message=st.session_state.current_full_message, # Use persisted message
-                    image_data=st.session_state.current_images_to_send, # Use persisted images
-                    mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
-                    thread_id=st.session_state.session_id_2
-                )
+            # CRITICAL: Check for the FLOW, not just the agent
+            if "flow" in st.session_state:
+                with st.chat_message("assistant"):
+                    # We now pass the FLOW to the streamer
+                    res = stream_response(
+                        flow=st.session_state.flow, # Target the flow engine
+                        user_message=st.session_state.current_full_message,
+                        image_data=st.session_state.current_images_to_send,
+                        mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
+                        thread_id=st.session_state.session_id_2
+                    )
 
-                # Commit the response to history and flag a rerun to update the UI
+                # Commit the response to history
                 st.session_state.messages_2.append({"role": "assistant", "content": res})
                 st.session_state.needs_rerun = True
 
