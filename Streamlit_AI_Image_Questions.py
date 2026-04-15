@@ -569,7 +569,7 @@ with col2:
                 with st.chat_message("assistant"):
                     # We now pass the FLOW to the streamer
                     res = stream_response(
-                        flow_1=st.session_state.flow_1, # Target the flow engine
+                        flow=st.session_state.flow_1, # Target the flow engine
                         user_message=st.session_state.current_full_message,
                         image_data=st.session_state.current_images_to_send,
                         mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
@@ -631,7 +631,7 @@ with col3:
                 with st.chat_message("assistant"):
                     # We now pass the FLOW to the streamer
                     res = stream_response(
-                        flow_2=st.session_state.flow_2, # Target the flow engine
+                        flow=st.session_state.flow_2, # Target the flow engine
                         user_message=st.session_state.current_full_message,
                         image_data=st.session_state.current_images_to_send,
                         mime_type=st.session_state.get("current_mime_types", "image/jpeg"),
